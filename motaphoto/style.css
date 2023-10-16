@@ -7,6 +7,9 @@ Tags: openclassrooms, motaphoto, photographe
 Text Domain: motaphoto
 */
 
+
+/* === Importation des polices === */
+
 /* space-mono-regular - latin */
 @font-face {
     font-display: swap; 
@@ -51,3 +54,59 @@ Text Domain: motaphoto
     font-weight: 300;
     src: url('fonts/poppins-v20-latin-300.woff2') format('woff2');
   }
+
+
+/* === Header & Footer === */
+body {
+    color: #000;
+}
+.menu a, .nav_footer p {
+  font-family: 'Space Mono', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #000;
+}
+
+.menu li {
+  list-style: none;
+}
+
+.nav_header {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  flex-wrap: wrap;
+  height: 80px;
+  justify-content: space-around;
+}
+
+.nav_header .logo {
+  width: 216px;
+  height: 14px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.nav_header .menu {
+  display: flex;
+  gap: 45px;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%
+}
+
+.nav_footer {
+  display: flex;
+  justify-content: center;
+  gap: 86px;
+}
+
+.nav_footer .menu {
+  display: flex;
+  gap: 86px;
+}
