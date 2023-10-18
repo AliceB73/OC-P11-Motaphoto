@@ -1,4 +1,5 @@
 <footer>
+    <?php get_template_part('template-parts/contact') ?>
     <nav role="navigation" class="nav_footer" aria-label="<?php _e('Menu footer', 'motaphoto'); ?>">
         <?php
         wp_nav_menu([

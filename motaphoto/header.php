@@ -15,7 +15,8 @@
         wp_nav_menu([
             'theme_location' => 'header-menu',
             'container' => false,
-            'menu_class' => 'menu header'
+            'menu_class' => 'menu header',
+            'menu_id' => 'nav_menu'
         ])
         ?>
     </nav>

@@ -55,6 +55,15 @@ Text Domain: motaphoto
     src: url('fonts/poppins-v20-latin-300.woff2') format('woff2');
   }
 
+  /* poppins-500 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  src: url('fonts/poppins-v20-latin-500.woff2') format('woff2');
+}
+
 
 /* === Header & Footer === */
 body {
@@ -67,6 +76,10 @@ body {
   text-transform: uppercase;
   text-decoration: none;
   color: #000;
+}
+
+.menu a:hover {
+  font-weight: 700;
 }
 
 .menu li {
@@ -109,4 +122,73 @@ footer {
 .nav_footer .menu {
   display: flex;
   gap: 86px;
+}
+
+/* === Modale de contact === */
+
+#contact-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+#contact-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  max-width: 500px;
+  border: 5px solid #000;
+  background-color: #fff;
+  margin: 3% auto 0 auto;
+}
+
+#contact-modal img {
+  width: 100%;
+}
+
+#contact-modal .contact-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #313144;
+}
+
+#contact-modal .contact-field {
+  border-radius: 8px;
+  border: 1px #B8BBC2 solid;
+  resize: none;
+  height: 40px
+}
+
+#contact-modal #message {
+  height: 180px;
+}
+
+#contact-modal .cta-button {
+  width: 100%;
+  padding: 8px 15px;
+  border: none;
+  font-family: 'Space Mono', sans-serif;
+  font-size: 12px;
+  background: #D8D8D8;
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.02);
+  border-radius: 2px;
+  overflow: hidden;
+  transition-duration: 0.6s;
+}
+
+#contact-modal .cta-button:hover {
+  color: white;
+  background-color: #000;
+  cursor: pointer;
 }
