@@ -1,50 +1,52 @@
 <?php
-/**
- * The template for displaying all single posts
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- *
- * @package WordPress
- * @subpackage Twenty_Twenty_One
- * @since Twenty Twenty-One 1.0
- */
+get_header(); // Inclure l'en-tête
 
-get_header();
+if (have_posts()) : // Vérifier s'il y a des posts
+    while (have_posts()) : the_post(); // Boucle à travers les posts
+        $image = get_field('photo'); // Récupérer le champ personnalisé 'image'
+        $format = get_field('format');
+        $type = get_field('type');
+        $reference = get_field('reference');
+        $terms = get_the_terms(get_the_ID(), 'category'); // Récupérer les termes de la taxonomie 'category'
+        $term_name = $terms[0]->name; // Récupérer le nom du premier terme
+        $year = get_the_date('Y');
+?>
+        <div id="single-photo-bloc" class="post-single-photo">
+            <div class="info-and-photo">
+                <div class="info-content">
+                    <h2><?php the_title(); ?></h2>
+                    <p>Référence : <?php echo $reference; ?></p>
+                    <p>Catégorie : <?php echo $term_name; ?></p>
+                    <p>Format : <?php echo $format; ?></p>
+                    <p>Type : <?php echo $type; ?></p>
+                    <p>Année : <?php echo $year; ?></p>
+                </div>
 
-/* Start the Loop */
-while ( have_posts() ) :
-	the_post();
+                <img id="main-photo" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>">
+            </div>
+            <div class="cta-and-pagination">
+                <div class="single-photo-cta">
+                    <p>Cette photo vous intéresse ?</p>
+                    <button>Contact</button>
+                </div>
+                <div class="single-photo-pagination">
+                    <?php
+                    the_post_navigation(
+                        array(
+                            'next_text' => '<p class="meta-nav">' . $motaphoto_next_label . $motaphoto_next . '</p><p class="post-title"><img src="' . get_template_directory_uri() . '/assets/images/line-7.svg" alt="Photo suivante"></p>',
+                            'prev_text' => '<p class="meta-nav">' . $motaphoto_prev . $motaphoto_previous_label . '</p><p class="post-title"><img src="' . get_template_directory_uri() . '/assets/images/line-6.svg" alt="Photo précédente"></p>',
+                        )
+                    ); ?>
+                </div>
+            </div>
+        </div>
+<?php
 
-	get_template_part( 'template-parts/content/content-single' );
 
-	if ( is_attachment() ) {
-		// Parent post navigation.
-		the_post_navigation(
-			array(
-				/* translators: %s: Parent post link. */
-				'prev_text' => sprintf( __( '<span class="meta-nav">Published in</span><span class="post-title">%s</span>', 'twentytwentyone' ), '%title' ),
-			)
-		);
-	}
+    endwhile;
+else :
+    echo '<p>Aucun post trouvé</p>'; // Message si aucun post n'est trouvé
+endif;
 
-	// If comments are open or there is at least one comment, load up the comment template.
-	if ( comments_open() || get_comments_number() ) {
-		comments_template();
-	}
-
-	// Previous/next post navigation.
-	$twentytwentyone_next = is_rtl() ? twenty_twenty_one_get_icon_svg( 'ui', 'arrow_left' ) : twenty_twenty_one_get_icon_svg( 'ui', 'arrow_right' );
-	$twentytwentyone_prev = is_rtl() ? twenty_twenty_one_get_icon_svg( 'ui', 'arrow_right' ) : twenty_twenty_one_get_icon_svg( 'ui', 'arrow_left' );
-
-	$twentytwentyone_next_label     = esc_html__( 'Next post', 'twentytwentyone' );
-	$twentytwentyone_previous_label = esc_html__( 'Previous post', 'twentytwentyone' );
-
-	the_post_navigation(
-		array(
-			'next_text' => '<p class="meta-nav">' . $twentytwentyone_next_label . $twentytwentyone_next . '</p><p class="post-title">%title</p>',
-			'prev_text' => '<p class="meta-nav">' . $twentytwentyone_prev . $twentytwentyone_previous_label . '</p><p class="post-title">%title</p>',
-		)
-	);
-endwhile; // End of the loop.
-
-get_footer();
+get_footer(); // Inclure le pied de page
+?>

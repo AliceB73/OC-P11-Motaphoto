@@ -4,11 +4,11 @@ let contactLink = document.querySelector(".contact-link");
 
 contactLink.onclick = function (event) {
     event.preventDefault();
-    modal.style.display = "block";
+    modal.classList.add('show');
 }
 
 window.onclick = function (event) {
     if (event.target == modal) {
-        modal.style.display = "none";
+        modal.classList.remove('show');
     }
 }
