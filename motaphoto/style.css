@@ -115,6 +115,7 @@ body {
 
 footer {
   margin-top: auto;
+  border-top: 1px solid #000;
 }
 .nav_footer {
   display: flex;
@@ -222,6 +223,7 @@ footer {
   width: 50%;
   align-self: baseline;
   padding-left: 5%;
+  border-bottom: 1px solid #000;
 }
 
 .info-content h2, .info-content p {
@@ -256,6 +258,7 @@ footer {
   justify-content: space-between;
   width: 100%;
   margin-top: 40px;
+  border-bottom: 1px solid #000;
 }
 
 .single-photo-cta {

@@ -1,14 +1,18 @@
 
-let modal = document.getElementById("contact-modal");
-let contactLink = document.querySelector(".contact-link");
+jQuery(document).ready(function () {
+    let modal = jQuery("#contact-modal");
+    let contactLink = jQuery(".contact-link");
 
-contactLink.onclick = function (event) {
-    event.preventDefault();
-    modal.classList.add('show');
-}
+    contactLink.click(function (event) {
+        event.preventDefault();
+        modal.addClass('show');
+        jQuery('#ref').val(refPhoto);
+        console.log(refPhoto);
+    });
 
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.classList.remove('show');
-    }
-}
+    jQuery(window).click(function (event) {
+        if (event.target == modal[0]) {
+            modal.removeClass('show');
+        }
+    });
+});
