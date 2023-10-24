@@ -17,6 +17,7 @@
             'container' => false,
             'menu_class' => 'menu header',
             'menu_id' => 'nav_menu'
-        ])
+        ]);
+        get_template_part('template-parts/menu-mobile');
         ?>
     </nav>
