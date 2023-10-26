@@ -30,17 +30,22 @@ if (have_posts()) :
                     <button id="cta-single-photo">Contact</button>
                 </div>
                 <div class="single-photo-pagination">
-                    <div id="preview" style="width: 100px; height: 100px;"></div>
-                    <?php
-                    /*$prev_post = get_previous_post();
-                    $next_post = get_next_post();
+                    <div id="preview">
+                        <?php
+                        $prev_post = get_previous_post();
+                        $next_post = get_next_post();
 
-                    $prev_photo_field = $prev_post ? get_field('photo', $prev_post->ID) : null;
-                    $next_photo_field = $next_post ? get_field('photo', $next_post->ID) : null;
+                        $prev_photo_field = $prev_post ? get_field('photo', $prev_post->ID) : null;
+                        $next_photo_field = $next_post ? get_field('photo', $next_post->ID) : null;
 
-                    $prev_thumbnail_url = is_array($prev_photo_field) ? $prev_photo_field['url'] : '';
-                    $next_thumbnail_url = is_array($next_photo_field) ? $next_photo_field['url'] : '';*/
-                    ?>
+                        $prev_thumbnail_url = is_array($prev_photo_field) ? $prev_photo_field['url'] : '';
+                        $next_thumbnail_url = is_array($next_photo_field) ? $next_photo_field['url'] : '';
+
+                        ?>
+                        <!--<img style="height: 70px; width: 80px">-->
+
+                    </div>
+
                     <?php
                     the_post_navigation(
                         array(
@@ -73,7 +78,7 @@ if (have_posts()) :
                 wp_reset_postdata();
                 ?>
             </div>
-            <a href="#">Toutes les photos</a>
+            <a href="<?php echo get_home_url() ?>">Toutes les photos</a>
         </div>
 <?php
 

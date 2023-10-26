@@ -53,3 +53,5 @@ add_action('wp_footer', 'ajouter_ref_photo');
     }
 }
 add_action('wp_footer', 'test_image'); */
+
+add_theme_support('post-thumbnails');

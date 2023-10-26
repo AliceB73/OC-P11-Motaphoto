@@ -1,24 +1,31 @@
 
-jQuery(document).ready(function () {
-    let modal = jQuery("#contact-modal");
-    let contactLink = jQuery(".contact-link");
-    let contactButton = jQuery("#cta-single-photo");
+
+// jQuery(document).ready(function ($) {...});
+
+/*(function ($) {
+    $('#saySomething').click(...);
+}(jQuery));*/
+
+jQuery(document).ready(function ($) {
+    let modal = $("#contact-modal");
+    let contactLink = $(".contact-link");
+    let contactButton = $("#cta-single-photo");
 
     contactLink.click(function (event) {
         event.preventDefault();
         modal.addClass('show');
-        jQuery('#ref').val(refPhoto);
+        $('#ref').val(refPhoto);
         console.log(refPhoto);
     });
 
     contactButton.click(function (event) {
         event.preventDefault();
         modal.addClass('show');
-        jQuery('#ref').val(refPhoto);
+        $('#ref').val(refPhoto);
         console.log(refPhoto);
     });
 
-    jQuery(window).click(function (event) {
+    $(window).click(function (event) {
         if (event.target == modal[0]) {
             modal.removeClass('show');
         }
@@ -93,7 +100,7 @@ jQuery(document).ready(function (jQuery) {
 
 //
 
-let menuMobile = document.querySelector(".menu_mobile")
+let menuMobile = document.querySelector(".nav_header_mobile")
 let burgerIcon = document.querySelector(".menu_mobile_icon");
 let openBtn = document.getElementById("openBtn");
 
@@ -101,4 +108,33 @@ openBtn.addEventListener('click', function (event) {
     event.preventDefault();
     burgerIcon.classList.toggle('active');
     menuMobile.classList.toggle('active');
+});
+
+/*jQuery(document).ready(function ($) {
+    $('.nav-previous a, .nav-next a').hover(
+        function () { // Fonction exécutée lorsque la souris survole l'élément
+            var thumbnailUrl = $(this).find('.meta-nav').data('thumbnail');
+            $('#preview img').attr('src', thumbnailUrl);
+        },
+        function () { // Fonction exécutée lorsque la souris quitte l'élément
+            $('#preview img').attr('src', '');
+        }
+    );
+});*/
+
+
+// Gestion de l'affiche de la miniature au survol de la pagination sur la page single.php
+
+jQuery(document).ready(function ($) {
+    $('.nav-previous a, .nav-next a').hover(
+        function () {
+            let thumbnailUrl = $(this).find('.meta-nav').data('thumbnail');
+            if (thumbnailUrl) {
+                $('#preview').html('<img src="' + thumbnailUrl + ' ">');
+            }
+        },
+        function () {
+            $('#preview').empty();
+        }
+    );
 });
