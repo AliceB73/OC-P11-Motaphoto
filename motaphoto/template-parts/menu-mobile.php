@@ -5,7 +5,6 @@
         <span></span>
     </span>
 </a>
-<!--<div class="menu_mobile">-->
 <nav role="navigation" class="nav_header_mobile" aria-label="<?php _e('Menu header', 'motaphoto'); ?>">
     <?php
     wp_nav_menu([
@@ -16,4 +15,3 @@
     ]);
     ?>
 </nav>
-<!--</div>-->

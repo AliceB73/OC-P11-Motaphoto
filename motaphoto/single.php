@@ -42,7 +42,6 @@ if (have_posts()) :
                         $next_thumbnail_url = is_array($next_photo_field) ? $next_photo_field['url'] : '';
 
                         ?>
-                        <!--<img style="height: 70px; width: 80px">-->
 
                     </div>
 
@@ -60,21 +59,7 @@ if (have_posts()) :
             <h3>Vous aimerez aussi</h3>
             <div class="two-photos">
                 <?php
-                $args = array(
-                    'post_type' => 'photo',
-                    'posts_per_page' => 2,
-                    'category_name' => $term_name,
-                    'post__not_in' => array(get_the_ID()),
-                );
-                $related_posts = new WP_Query($args);
-                if ($related_posts->have_posts()) :
-                    while ($related_posts->have_posts()) : $related_posts->the_post();
-                        $related_image = get_field('photo');
-                        if (!empty($related_image)) : ?>
-                            <img src="<?php echo $related_image['url']; ?>" alt="<?php echo $related_image['alt']; ?>">
-                <?php endif;
-                    endwhile;
-                endif;
+                get_template_part('template-parts/photo-block');
                 wp_reset_postdata();
                 ?>
             </div>
