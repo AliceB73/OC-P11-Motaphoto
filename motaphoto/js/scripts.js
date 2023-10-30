@@ -55,3 +55,22 @@ jQuery(document).ready(function ($) {
         }
     );
 });
+
+// Gestion des menus déroulants des filtres
+
+let dropdowns = document.querySelectorAll(".dropdown-content a");
+
+dropdowns.forEach(function (dropdown) {
+    dropdown.addEventListener('mouseenter', function (event) {
+        event.preventDefault();
+        dropdown.style.backgroundColor = "#FFD6D6";
+    });
+    dropdown.addEventListener('mouseleave', function (event) {
+        event.preventDefault();
+        dropdown.style.backgroundColor = "";
+    });
+    dropdown.addEventListener('click', function (event) {
+        event.preventDefault();
+        dropdown.style.backgroundColor = "#E00000";
+    })
+});

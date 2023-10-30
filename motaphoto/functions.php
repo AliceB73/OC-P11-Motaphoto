@@ -6,6 +6,7 @@ function motaphoto_enqueue_styles()
 {
     wp_enqueue_style('style', get_stylesheet_uri(), array());
     wp_enqueue_script('js', get_stylesheet_directory_uri() . '/js/scripts.js', array('jquery'), false, true);
+    wp_enqueue_script('font-awesone-icons', 'https://kit.fontawesome.com/6e49e8fbfb.js');
 }
 add_action('wp_enqueue_scripts', 'motaphoto_enqueue_styles');
 

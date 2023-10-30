@@ -27,7 +27,7 @@ if (have_posts()) :
             <div class="cta-and-pagination">
                 <div class="single-photo-cta">
                     <p>Cette photo vous intéresse ?</p>
-                    <button id="cta-single-photo">Contact</button>
+                    <button id="cta-single-photo" class="grey-button">Contact</button>
                 </div>
                 <div class="single-photo-pagination">
                     <div id="preview">
@@ -63,7 +63,7 @@ if (have_posts()) :
                 wp_reset_postdata();
                 ?>
             </div>
-            <a href="<?php echo get_home_url() ?>">Toutes les photos</a>
+            <a href="<?php echo get_home_url() ?>" class="grey-button">Toutes les photos</a>
         </div>
 <?php
 

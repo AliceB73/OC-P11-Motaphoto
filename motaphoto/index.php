@@ -27,7 +27,11 @@ wp_reset_postdata();
     <h1>Photographe Event</h1>
 </section>
 
-<section class="filters"></section>
+<section class="filters">
+    <?php
+    get_template_part("template-parts/filters");
+    ?>
+</section>
 
 <section class="catalogue">
     <?php
@@ -49,6 +53,8 @@ wp_reset_postdata();
         }
     }
     ?>
+
+    <a href="" class="grey-button">Charger plus</a>
 </section>
 
 <?php get_footer(); ?>
