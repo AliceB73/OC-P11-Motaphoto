@@ -37,7 +37,7 @@ wp_reset_postdata();
     <?php
     $args = array(
         'post_type' => 'photo',
-        'post_per_page' => -1,
+        'posts_per_page' => 12,
     );
 
     $first_twelve_photos = new WP_Query($args);
@@ -53,8 +53,8 @@ wp_reset_postdata();
         }
     }
     ?>
-
-    <a href="" class="grey-button">Charger plus</a>
 </section>
+
+<button class="grey-button" id="load-more">Charger plus</button>
 
 <?php get_footer(); ?>

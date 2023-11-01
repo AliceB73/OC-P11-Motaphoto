@@ -21,8 +21,9 @@ if (have_posts()) :
                     <p>Type : <?php echo $type; ?></p>
                     <p>Année : <?php echo $year; ?></p>
                 </div>
-
-                <img id="main-photo" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>">
+                <div class="main-photo-bloc">
+                    <img id="main-photo" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>">
+                </div>
             </div>
             <div class="cta-and-pagination">
                 <div class="single-photo-cta">
@@ -56,14 +57,34 @@ if (have_posts()) :
             </div>
         </div>
         <div class="related-photos">
-            <h3>Vous aimerez aussi</h3>
+            <?php
+            $args = array(
+                'post_type' => 'photo',
+                'posts_per_page' => 2,
+                'category_name' => $term_name,
+                'post__not_in' => array(get_the_ID()),
+                'orderby' => 'rand',
+            );
+            $related_posts = new WP_Query($args);
+            if ($related_posts->have_posts()) :
+                echo '<h3>Vous aimerez aussi</h3>'; // Déplacez le titre ici
+            endif;
+            ?>
             <div class="two-photos">
                 <?php
-                get_template_part('template-parts/photo-block');
+                if ($related_posts->have_posts()) :
+                    while ($related_posts->have_posts()) : $related_posts->the_post();
+                        $related_image = get_field('photo');
+                        if (!empty($related_image)) : ?>
+                            <img src="<?php echo $related_image['url']; ?>" alt="<?php echo $related_image['alt']; ?>">
+                <?php endif;
+                    endwhile;
+                endif;
+
                 wp_reset_postdata();
                 ?>
             </div>
-            <a href="<?php echo get_home_url() ?>" class="grey-button">Toutes les photos</a>
+            <a href="<?php echo get_home_url() ?>" class="grey-button" id="see-all-btn">Toutes les photos</a>
         </div>
 <?php
 

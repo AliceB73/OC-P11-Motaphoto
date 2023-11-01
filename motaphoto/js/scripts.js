@@ -69,8 +69,32 @@ dropdowns.forEach(function (dropdown) {
         event.preventDefault();
         dropdown.style.backgroundColor = "";
     });
+    dropdown.addEventListener('mousedown', function (event) {
+        event.preventDefault();
+        console.log("clic");
+        dropdown.style.backgroundColor = "#FE5858";
+    });
     dropdown.addEventListener('click', function (event) {
         event.preventDefault();
         dropdown.style.backgroundColor = "#E00000";
+        dropdown.style.color = "#fff";
     })
+});
+
+//Bouton "load more"
+
+jQuery('#load-more').click(function (event) {
+    event.preventDefault();
+    let num_posts = jQuery('.photo-catalogue').length; // Compte le nombre de posts déjà affichés.
+    jQuery.ajax({
+        url: load_more_params.ajaxurl,
+        type: 'post',
+        data: {
+            action: 'load_more_function',
+            offset: num_posts, // Passe le nombre de posts à AJAX.
+        },
+        success: function (response) {
+            jQuery('.catalogue').append(response);
+        }
+    });
 });
