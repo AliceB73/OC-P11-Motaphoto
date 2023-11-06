@@ -10,7 +10,7 @@
 
 <body>
     <nav role="navigation" class="nav_header" aria-label="<?php _e('Menu header', 'motaphoto'); ?>">
-        <img class="logo" alt="Nathalie Mota" src="<?php echo get_template_directory_uri() . '/assets/images/logo.png'; ?>">
+        <a href="<?php echo get_site_url() ?>"><img class="logo" alt="Nathalie Mota" src="<?php echo get_template_directory_uri() . '/assets/images/logo.png'; ?>"></a>
         <?php
         wp_nav_menu([
             'theme_location' => 'header-menu',
@@ -18,6 +18,16 @@
             'menu_class' => 'menu header',
             'menu_id' => 'nav_menu'
         ]);
-        get_template_part('template-parts/menu-mobile');
         ?>
+        <a href="#" id="openBtn">
+            <span class="menu_mobile_icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </a>
     </nav>
+
+    <?php
+    get_template_part('template-parts/menu-mobile');
+    ?>

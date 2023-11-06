@@ -40,7 +40,7 @@ openBtn.addEventListener('click', function (event) {
 });
 
 
-// Gestion de l'affiche de la miniature au survol de la pagination sur la page single.php
+// Gestion de l'affichage de la miniature au survol de la pagination sur la page single.php
 
 jQuery(document).ready(function ($) {
     $('.nav-previous a, .nav-next a').hover(
@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
     );
 });
 
-// Gestion des menus déroulants des filtres
+// Gestion du background-color des options de filtre
 
 let dropdowns = document.querySelectorAll(".dropdown-content a");
 
@@ -81,17 +81,44 @@ dropdowns.forEach(function (dropdown) {
     })
 });
 
+//Requête ajax des filtres
+
+let current_filter = '';
+
+jQuery('.dropdown-content a').click(function (event) {
+    event.preventDefault();
+    current_filter = jQuery(this).text();
+    let filter = jQuery(this).text();
+    jQuery.ajax({
+        url: load_more_params.ajaxurl,
+        type: 'post',
+        data: {
+            action: 'filter_posts_function',
+            filter: filter,
+        },
+        success: function (response) {
+            jQuery('.catalogue').html(response); //On remplace les photos présentes par les photos filtrées
+        }
+    });
+});
+
 //Bouton "load more"
 
 jQuery('#load-more').click(function (event) {
     event.preventDefault();
-    let num_posts = jQuery('.photo-catalogue').length; // Compte le nombre de posts déjà affichés.
+
+    if (jQuery('.catalogue:contains("Aucun post n\'a été trouvé")').length > 0) {
+        return;
+    }
+
+    let num_posts = jQuery('.photo-catalogue').length;
     jQuery.ajax({
         url: load_more_params.ajaxurl,
         type: 'post',
         data: {
             action: 'load_more_function',
-            offset: num_posts, // Passe le nombre de posts à AJAX.
+            offset: num_posts,
+            filter: current_filter,
         },
         success: function (response) {
             jQuery('.catalogue').append(response);

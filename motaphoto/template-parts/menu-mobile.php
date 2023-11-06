@@ -1,10 +1,3 @@
-<a href="#" id="openBtn">
-    <span class="menu_mobile_icon">
-        <span></span>
-        <span></span>
-        <span></span>
-    </span>
-</a>
 <nav role="navigation" class="nav_header_mobile" aria-label="<?php _e('Menu header', 'motaphoto'); ?>">
     <?php
     wp_nav_menu([
