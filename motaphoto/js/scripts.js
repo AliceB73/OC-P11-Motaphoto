@@ -71,7 +71,6 @@ dropdowns.forEach(function (dropdown) {
     });
     dropdown.addEventListener('mousedown', function (event) {
         event.preventDefault();
-        console.log("clic");
         dropdown.style.backgroundColor = "#FE5858";
     });
     dropdown.addEventListener('click', function (event) {
@@ -83,21 +82,33 @@ dropdowns.forEach(function (dropdown) {
 
 //Requête ajax des filtres
 
-let current_filter = '';
+
+let current_filters = {};
+let offset = 12; // Initialisez l'offset à 12 pour charger les posts suivants
 
 jQuery('.dropdown-content a').click(function (event) {
+
     event.preventDefault();
-    current_filter = jQuery(this).text();
-    let filter = jQuery(this).text();
+
+    let filterType = jQuery(this).closest('.dropdown').find('.dropbtn').text().trim(); // récupère le texte du bouton qui correspond au type de filtre
+    let filterValue = jQuery(this).text();
+    current_filters[filterType] = filterValue;
+
+    // Réinitialisez l'offset chaque fois qu'un filtre est modifié
+    offset = 12;
+
     jQuery.ajax({
         url: load_more_params.ajaxurl,
         type: 'post',
         data: {
             action: 'filter_posts_function',
-            filter: filter,
+            filters: current_filters,
         },
         success: function (response) {
             jQuery('.catalogue').html(response); //On remplace les photos présentes par les photos filtrées
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
         }
     });
 });
@@ -118,10 +129,43 @@ jQuery('#load-more').click(function (event) {
         data: {
             action: 'load_more_function',
             offset: num_posts,
-            filter: current_filter,
+            filters: current_filters, // Envoyez current_filters à la place de current_filter
         },
         success: function (response) {
             jQuery('.catalogue').append(response);
+            offset += 12; // Augmente l'offset pour charger les prochains posts
         }
     });
 });
+
+// Gestion de la lightbox
+
+class Lightbox {
+
+    static init() {
+        const links = document.querySelectorAll('a[href$=".jpg"], a[href$=".jpeg"]')
+            .forEach(link => link.addEventListener('click', e => {
+                e.preventDefault()
+                new Lightbox(e.currentTarget.getAttribute('href'))
+            }))
+    }
+
+    constructor(url) {
+        const element = this.buildDOM(url)
+        document.body.appendChild(element)
+    }
+
+    buildDOM(url) {
+        const dom = document.createElement('div')
+        dom.classList.add('lightbox')
+        dom.innerHTML = `<button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+        <button class="lightbox-next">Suivante<img src="<?php echo get_template_directory_uri(); ?>/assets/images/right-arrow.svg" alt="Photo précédente"></button>
+        <button class="lightbox-prev"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/left-arrow.svg" alt="Photo précédente">Précédente</button>
+        <div class="lightbox-container">
+            <img src="${url}">
+        </div>`
+        return dom
+    }
+}
+
+Lightbox.init()

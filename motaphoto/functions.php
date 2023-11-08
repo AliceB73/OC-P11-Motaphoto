@@ -47,72 +47,32 @@ add_action('wp_ajax_nopriv_filter_posts_function', 'filter_posts_function');
 
 function filter_posts_function()
 {
-    $filter = $_POST['filter']; // On obtient le filtre des données envoyées à AJAX
+    $filters = $_POST['filters']; // On obtient les filtres des données envoyées à AJAX
 
+    error_log(print_r($filters, true)); // Affiche les filtres reçus
 
     $args = array(
         'post_type' => 'photo',
-        'posts_per_page' => -1,
+        'posts_per_page' => 12,
     );
 
-    $format_filter = new WP_Query($args);
-    $present_formats = array();
-
-    if ($format_filter->have_posts()) {
-        while ($format_filter->have_posts()) {
-            $format_filter->the_post();
-            $format = get_field('format');
-
-            if (!in_array($format, $present_formats)) {
-                $present_formats[] = $format;
-            }
-        }
+    if (isset($filters['Catégorie'])) {
+        $args['category_name'] = $filters['Catégorie'];
     }
 
-    // On récupère toutes les catégories
-    $categories = get_terms(array(
-        'taxonomy' => 'category',
-        'hide_empty' => false,
-    ));
-
-    //On crée un tableau pour stocker les noms des catégories
-    $category_names = array();
-    if (!empty($categories) && !is_wp_error($categories)) {
-        foreach ($categories as $category) {
-            if ($category->slug != 'non-classe') {
-                $category_names[] = $category->name;
-            }
-        }
+    if (isset($filters['Formats'])) {
+        $args['meta_key'] = 'format';
+        $args['meta_value'] = $filters['Formats'];
     }
 
-    // Selon le filtre sélectionné, on ajuste nos arguments
-    if ($filter == 'Des plus récentes aux plus anciennes') {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'orderby' => 'date',
-            'order' => 'DESC',
-        );
-    } elseif ($filter == 'Des plus anciennes aux plus récentes') {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'orderby' => 'date',
-            'order' => 'ASC',
-        );
-    } elseif (in_array($filter, $category_names)) {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'category_name' => $filter,
-        );
-    } elseif (in_array($filter, $present_formats)) {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'meta_key' => 'format',
-            'meta_value' => $filter,
-        );
+    if (isset($filters['Trier par'])) {
+        if ($filters['Trier par'] == 'Des plus récentes aux plus anciennes') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+        } elseif ($filters['Trier par'] == 'Des plus anciennes aux plus récentes') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'ASC';
+        }
     }
 
     $filtered_posts = new WP_Query($args);
@@ -121,10 +81,23 @@ function filter_posts_function()
         while ($filtered_posts->have_posts()) {
             $filtered_posts->the_post();
             $image = get_field('photo');
+            $category = get_the_category();
+            $reference = get_field('reference');
+            $permalink = get_permalink();
             if (!empty($image)) {
-                echo '<img class="photo-catalogue" id="photo-catalogue-mobile" src="' . $image['url'] . '">';
+                ob_start(); // Commence la capture de la sortie
+                get_template_part('template-parts/photo-block', null, array(
+                    'image' => $image,
+                    'category' => $category,
+                    'reference' => $reference,
+                    'permalink' => $permalink
+                ));
+                $output = ob_get_clean(); // Récupère la sortie et arrête la capture
+                echo $output;
             }
         }
+    } else {
+        echo '<div><p class="error-msg">Aucune photo n\'a été trouvée pour ces filtres.</p></div>';
     }
 
     wp_die(); // On met fin à l'exécution de la fonction
@@ -137,88 +110,35 @@ function filter_posts_function()
 add_action('wp_ajax_load_more_function', 'load_more_function');
 add_action('wp_ajax_nopriv_load_more_function', 'load_more_function');
 
+
 function load_more_function()
 {
-    $offset = $_POST['offset'];
-    $filter = $_POST['filter'];
+    $filters = $_POST['filters']; // On obtient les filtres des données envoyées à AJAX
+    $offset = $_POST['offset']; // On obtient l'offset des données envoyées à AJAX
 
-    $args = array(
-        'post_type' => 'photo',
-        'posts_per_page' => -1,
-    );
-
-    $format_filter = new WP_Query($args);
-    $present_formats = array();
-
-    if ($format_filter->have_posts()) {
-        while ($format_filter->have_posts()) {
-            $format_filter->the_post();
-            $format = get_field('format');
-
-            if (!in_array($format, $present_formats)) {
-                $present_formats[] = $format;
-            }
-        }
-    }
-
-    $categories = get_terms(array(
-        'taxonomy' => 'category',
-        'hide_empty' => false,
-    ));
-
-    $category_names = array();
-    if (!empty($categories) && !is_wp_error($categories)) {
-        foreach ($categories as $category) {
-            if ($category->slug != 'non-classe') {
-                $category_names[] = $category->name;
-            }
-        }
-    }
-
-    // Arguments par défaut, si aucun filtre n'est sélectionné
     $args = array(
         'post_type' => 'photo',
         'posts_per_page' => 12,
-        'offset' => $offset,
+        'offset' => $offset, // Ajoutez l'offset à vos arguments de requête
     );
 
-    if ($filter == 'Des plus récentes aux plus anciennes') {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'offset' => $offset,
-        );
-    } elseif ($filter == 'Des plus anciennes aux plus récentes') {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'orderby' => 'date',
-            'order' => 'ASC',
-            'offset' => $offset,
-        );
-    } elseif (in_array($filter, $category_names)) {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'category_name' => $filter,
-            'offset' => $offset,
-        );
-    } elseif (in_array($filter, $present_formats)) {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'meta_key' => 'format',
-            'meta_value' => $filter,
-            'offset' => $offset,
-        );
-    } else {
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => 12,
-            'offset' => $offset,
-        );
+    if (isset($filters['Catégorie'])) {
+        $args['category_name'] = $filters['Catégorie'];
+    }
+
+    if (isset($filters['Formats'])) {
+        $args['meta_key'] = 'format';
+        $args['meta_value'] = $filters['Formats'];
+    }
+
+    if (isset($filters['Trier par'])) {
+        if ($filters['Trier par'] == 'Des plus récentes aux plus anciennes') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+        } elseif ($filters['Trier par'] == 'Des plus anciennes aux plus récentes') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'ASC';
+        }
     }
 
     $more_posts = new WP_Query($args);
@@ -227,12 +147,23 @@ function load_more_function()
         while ($more_posts->have_posts()) {
             $more_posts->the_post();
             $image = get_field('photo');
+            $category = get_the_category();
+            $reference = get_field('reference');
+            $permalink = get_permalink();
             if (!empty($image)) {
-                echo '<img class="photo-catalogue" id="photo-catalogue-mobile" src="' . $image['url'] . '">';
+                ob_start(); // Commence la capture de la sortie
+                get_template_part('template-parts/photo-block', null, array(
+                    'image' => $image,
+                    'category' => $category,
+                    'reference' => $reference,
+                    'permalink' => $permalink
+                ));
+                $output = ob_get_clean(); // Récupère la sortie et arrête la capture
+                echo $output;
             }
         }
     } else {
-        echo '<div><p class="error-msg">Aucun post n\'a été trouvé</p></div>';
+        echo '<div><p class="error-msg">Aucun post n\'a été trouvé.</p></div>';
     }
 
     wp_die(); // On termine l'exécution de la fonction

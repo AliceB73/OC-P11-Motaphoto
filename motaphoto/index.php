@@ -46,9 +46,16 @@ wp_reset_postdata();
         while ($first_twelve_photos->have_posts()) {
             $first_twelve_photos->the_post();
             $image = get_field('photo');
+            $category = get_the_category();
+            $reference = get_field('reference');
+            $permalink = get_permalink();
             if (!empty($image)) {
-    ?> <img class="photo-catalogue" id="photo-catalogue-mobile" src="<?php echo $image['url'] ?>">
-    <?php
+                get_template_part('template-parts/photo-block', null, array(
+                    'image' => $image,
+                    'category' => $category,
+                    'reference' => $reference,
+                    'permalink' => $permalink
+                ));
             }
         }
     }

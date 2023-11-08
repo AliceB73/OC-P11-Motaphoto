@@ -74,10 +74,21 @@ if (have_posts()) :
                 <?php
                 if ($related_posts->have_posts()) :
                     while ($related_posts->have_posts()) : $related_posts->the_post();
-                        $related_image = get_field('photo');
-                        if (!empty($related_image)) : ?>
-                            <img src="<?php echo $related_image['url']; ?>" alt="<?php echo $related_image['alt']; ?>">
-                <?php endif;
+                        $image = get_field('photo');
+                        $category = get_the_category();
+                        $reference = get_field('reference');
+                        $permalink = get_permalink();
+                        if (!empty($image)) {
+                            ob_start(); // Commence la capture de la sortie
+                            get_template_part('template-parts/photo-block', null, array(
+                                'image' => $image,
+                                'category' => $category,
+                                'reference' => $reference,
+                                'permalink' => $permalink
+                            ));
+                            $output = ob_get_clean(); // Récupère la sortie et arrête la capture
+                            echo $output;
+                        }
                     endwhile;
                 endif;
 
