@@ -28,10 +28,10 @@ $permalink = $args['permalink'];
             <p class="photo-category"><?php echo $category[0]->cat_name; ?></p>
             <p class="photo-reference"><?php echo $reference; ?></p>
             <a href="<?php echo $permalink; ?>" class="photo-link">
-                <i class="fa-regular fa-eye"></i>
+                <img class="eye-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/eye.svg" alt="">
             </a>
             <a href="<?php echo $image['url']; ?>" class="photo-fullscreen">
-                <i class="fas fa-expand"></i>
+                <img class="eye-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/fullscreen-icon.svg" alt="">
             </a>
         </div>
     </div>
