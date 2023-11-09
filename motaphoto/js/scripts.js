@@ -143,7 +143,7 @@ jQuery('#load-more').click(function (event) {
 class Lightbox {
 
     static init() {
-        const links = document.querySelectorAll('a[href$=".jpg"], a[href$=".jpeg"]')
+        const links = document.querySelectorAll('a[href$=".jpg"], a[href$=".jpeg"], a[href$=".png"]')
             .forEach(link => link.addEventListener('click', e => {
                 e.preventDefault()
                 new Lightbox(e.currentTarget.getAttribute('href'))
@@ -151,19 +151,57 @@ class Lightbox {
     }
 
     constructor(url) {
-        const element = this.buildDOM(url)
-        document.body.appendChild(element)
+        this.element = this.buildDOM(url)
+        this.loadImage(url)
+        this.onKeyUp = this.onKeyUp.bind(this)
+        document.body.appendChild(this.element)
+        document.addEventListener('keyup', this.onKeyUp)
+    }
+
+    loadImage(url) {
+        const image = new Image();
+        const container = this.element.querySelector('.lightbox-container');
+        const loader = document.createElement('div');
+        loader.classList.add('lightbox-loader');
+        container.appendChild(loader);
+        image.onload = function () {
+            container.removeChild(loader);
+            container.appendChild(image);
+        }
+        image.src = url;
+    }
+
+    /**
+     * 
+     * @param {KeyboardEvent} e 
+     */
+    onKeyUp(e) {
+        if (e.key == 'Escape') {
+            this.close(e)
+        }
+    }
+
+    /**
+     * Ferme la lightbox
+     * @param {MouseEvent} e 
+     */
+    close(e) {
+        e.preventDefault();
+        this.element.classList.add('fadeOut');
+        window.setTimeout(() => {
+            this.element.parentElement.removeChild(this.element)
+        }, 500)
+        document.removeEventListener('keyup', this.onKeyUp)
     }
 
     buildDOM(url) {
         const dom = document.createElement('div')
         dom.classList.add('lightbox')
         dom.innerHTML = `<button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
-        <button class="lightbox-next">Suivante<img src="<?php echo get_template_directory_uri(); ?>/assets/images/right-arrow.svg" alt="Photo précédente"></button>
-        <button class="lightbox-prev"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/left-arrow.svg" alt="Photo précédente">Précédente</button>
-        <div class="lightbox-container">
-            <img src="${url}">
-        </div>`
+        <button class="lightbox-next">Suivante →</button>
+        <button class="lightbox-prev">← Précédente</button>
+        <div class="lightbox-container"></div>`
+        dom.querySelector('.lightbox-close').addEventListener('click', this.close.bind(this))
         return dom
     }
 }

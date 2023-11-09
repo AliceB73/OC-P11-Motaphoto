@@ -47,13 +47,13 @@ wp_reset_postdata();
             $first_twelve_photos->the_post();
             $image = get_field('photo');
             $category = get_the_category();
-            $reference = get_field('reference');
+            $title = get_the_title();
             $permalink = get_permalink();
             if (!empty($image)) {
                 get_template_part('template-parts/photo-block', null, array(
                     'image' => $image,
                     'category' => $category,
-                    'reference' => $reference,
+                    'title' => $title,
                     'permalink' => $permalink
                 ));
             }
