@@ -634,8 +634,12 @@ footer {
 		color: $color_3;
 	}
 
+	.lightbox-prev {
+		left: 50px;
+	}
+
 	.lightbox-next {
-		right: 10px;
+		right: 50px;
 	}
 
 	.lightbox-prev:hover, .lightbox-next:hover {
@@ -660,6 +664,7 @@ footer {
 		align-items: center;
 		justify-content: center;
 		min-height: 100vh;
+		max-height: 100vh;
 
 		.lightbox-loader {
 			width: 38px;
@@ -671,6 +676,7 @@ footer {
 		img {
 			max-width: 100%;
 			height: auto;
+			max-height: 90vh;
 		}
 	}
 }
