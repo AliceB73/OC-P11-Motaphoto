@@ -56,11 +56,6 @@ Text Domain: motaphoto
   font-weight: 500;
   src: url("fonts/poppins-v20-latin-500.woff2") format("woff2");
 }
-/* === Header & Footer === */
-/* === Modale de contact === */
-/* === Single post page === */
-/* === Media Queries === */
-/* === Hero page d'accueil === */
 body {
   color: #000;
   display: flex;
@@ -116,6 +111,8 @@ body {
 }
 .nav_header .clickable-logo {
   display: flex;
+  align-items: center;
+  height: 100%;
 }
 .nav_header .logo {
   width: 216px;
@@ -128,6 +125,10 @@ body {
   display: flex;
   gap: 45px;
   padding-right: 20px;
+}
+.nav_header #nav_menu li {
+  display: flex;
+  align-items: center;
 }
 
 footer {
@@ -142,7 +143,7 @@ footer {
 #contact-modal {
   opacity: 0;
   visibility: hidden;
-  transition: visibility 0s, opacity 0.4s linear;
+  transition: visibility 0.3s, opacity 0.5s ease-in-out;
   position: fixed;
   z-index: 200;
   left: 0;
@@ -204,6 +205,12 @@ footer {
 #contact-modal.show {
   visibility: visible;
   opacity: 1;
+}
+
+.wpcf7-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .single-photo-cta {
@@ -271,15 +278,16 @@ footer {
   margin-left: auto;
   max-width: 1440px;
 }
-.post-single-photo .main-photo-bloc {
+.post-single-photo .main-photo-block {
   width: 45%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-content: center;
   flex-wrap: wrap;
+  position: relative;
 }
-.post-single-photo .main-photo-bloc #main-photo {
+.post-single-photo .main-photo-block #main-photo {
   width: 100%;
   max-height: calc(100vh - 240px);
   -o-object-fit: contain;
@@ -389,7 +397,7 @@ footer {
   background-color: #E00000;
   width: 100%;
   position: absolute;
-  top: 50px;
+  top: 0;
   height: 100%;
   left: 0;
   display: none;
@@ -440,22 +448,14 @@ footer {
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 .filters .left-align {
   display: flex;
   gap: 35px;
 }
-.filters select {
-  font-family: "Poppins", sans-serif;
-  color: #313144;
-  text-transform: uppercase;
-  border-radius: 8px;
-  border: 1px solid #B8BBC2;
-  width: 260px;
-  height: 45px;
-}
-.filters select option {
-  background-color: #fff;
+.filters .right-align {
+  padding-right: 30px;
 }
 
 .dropdown {
@@ -463,24 +463,37 @@ footer {
   display: inline-block;
 }
 .dropdown-content {
-  display: none;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   position: absolute;
   min-width: 160px;
   background-color: #fff;
   z-index: 1;
   width: 100%;
 }
-.dropdown-content a {
+.dropdown-content button {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.4s ease;
 }
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
+.dropdown-content button:hover {
+  background-color: #FFD6D6;
+}
+.dropdown-content button.blank {
+  height: 42px;
 }
 .dropdown:hover .dropdown-content {
-  display: block;
+  opacity: 1;
+  transform: scaleY(1);
 }
 .dropdown .dropbtn {
   font-family: "Poppins", sans-serif;
@@ -495,6 +508,20 @@ footer {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+}
+
+.dropdown:hover .dropbtn,
+.dropdown-content:hover ~ .dropbtn {
+  border: 1.3px solid #215AFF;
+}
+
+.dropdown-content button.selected {
+  background-color: #E00000;
+  color: #FFFFFF;
+}
+
+.dropdown-content button:active {
+  background-color: #FE5858;
 }
 
 .catalogue {
@@ -516,6 +543,11 @@ footer {
      object-fit: cover;
 }
 
+.errormsg-div {
+  width: 100%;
+  text-align: center;
+}
+
 .error-msg {
   font-family: "Space Mono", sans-serif;
   font-size: 18px;
@@ -532,14 +564,35 @@ footer {
   top: 0;
   left: 0;
   width: 100%;
-  height: 99%;
+  aspect-ratio: 1/1;
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.photo-block:hover .photo-overlay {
+.photo-block:hover .photo-overlay, .photo-wrapper:hover .photo-overlay-single {
   opacity: 1;
+}
+
+.photo-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+#main-photo {
+  display: block;
+  max-width: 100%;
+}
+
+.photo-overlay-single {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .photo-info {
@@ -577,7 +630,7 @@ footer {
   width: 100%;
   height: 100%;
 }
-.photo-info .eye-icon {
+.photo-info .overlay-icon {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -600,9 +653,14 @@ footer {
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 300;
   overflow: auto;
-  transition: opacity 0.3s;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
-.lightbox .lightbox-prev, .lightbox .lightbox-next {
+.lightbox.open {
+  opacity: 1;
+}
+.lightbox .lightbox-prev,
+.lightbox .lightbox-next {
   font-family: "Space Mono", sans-serif;
   font-size: 12px;
   border: none;
@@ -611,6 +669,7 @@ footer {
   top: 50%;
   cursor: pointer;
   color: white;
+  z-index: 200;
 }
 .lightbox .lightbox-prev {
   left: 50px;
@@ -618,7 +677,14 @@ footer {
 .lightbox .lightbox-next {
   right: 50px;
 }
-.lightbox .lightbox-prev:hover, .lightbox .lightbox-next:hover {
+.lightbox .fa-chevron-right,
+.lightbox .fa-chevron-left {
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+}
+.lightbox .lightbox-prev:hover,
+.lightbox .lightbox-next:hover {
   font-weight: 700;
 }
 .lightbox .lightbox-close {
@@ -630,6 +696,7 @@ footer {
   top: 50px;
   right: 50px;
   color: white;
+  z-index: 200;
 }
 .lightbox .lightbox-container {
   margin-left: 50px;
@@ -639,6 +706,7 @@ footer {
   justify-content: center;
   min-height: 100vh;
   max-height: 100vh;
+  position: relative;
 }
 .lightbox .lightbox-container .lightbox-loader {
   width: 38px;
@@ -650,10 +718,28 @@ footer {
   max-width: 100%;
   height: auto;
   max-height: 90vh;
+  display: block;
+  transition: opacity 1s ease-in-out;
+  /*opacity: 1;
+  &.disappear {
+  	opacity: 0;
+  }*/
 }
-
-.lightbox.fadeOut {
-  opacity: 0;
+.lightbox .lightbox-container .lightbox-reference,
+.lightbox .lightbox-container .lightbox-category {
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.lightbox .lightbox-container .lightbox-reference {
+  left: 20%;
+}
+.lightbox .lightbox-container .lightbox-category {
+  right: 20%;
 }
 
 @media (max-width: 375px) {
@@ -661,7 +747,24 @@ footer {
     width: 300px !important;
   }
 }
+@media (max-width: 450px) {
+  .filters {
+    height: 250px;
+  }
+  .filters .left-align {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .filters .right-align {
+    padding-right: 0;
+  }
+}
 @media (max-width: 768px) {
+  header {
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.09);
+    z-index: 300;
+  }
   .nav_footer {
     flex-direction: column;
     align-items: center;
@@ -701,13 +804,13 @@ footer {
   #openBtn {
     display: block !important;
     padding-right: 40px;
-  }
-  html {
-    margin-top: 0 !important;
+    margin-top: auto;
+    margin-bottom: auto;
   }
   #contact-modal .modal-content {
     max-width: 286px;
     font-size: 12px;
+    margin-top: 15%;
   }
   #contact-modal .contact-field {
     width: 190px;
@@ -740,10 +843,10 @@ footer {
   .post-single-photo .info-content h2 {
     font-size: 46px;
   }
-  .post-single-photo .main-photo-bloc {
+  .post-single-photo .main-photo-block {
     width: 100%;
   }
-  .post-single-photo .main-photo-bloc #main-photo {
+  .post-single-photo .main-photo-block #main-photo {
     max-width: 265px;
   }
   .single-photo-pagination {
@@ -762,10 +865,6 @@ footer {
   }
   .two-photos {
     flex-direction: column;
-    width: 90%;
-  }
-  .two-photos img {
-    width: 100%;
   }
   .related-photos {
     padding: 0;
@@ -775,13 +874,15 @@ footer {
   #see-all-btn {
     display: none;
   }
-  #contact-modal .modal-content {
-    margin-top: 25%;
-  }
 }
 @media (min-width: 769px) {
   .nav_header_mobile.active {
     display: none;
+  }
+}
+@media (max-width: 800px) {
+  .dropdown .dropbtn {
+    width: 200px;
   }
 }
 @media (max-width: 980px) {
@@ -790,4 +891,7 @@ footer {
     align-items: center;
     margin: 0 0 10px 0;
   }
+}
+body {
+  overflow-x: hidden;
 }/*# sourceMappingURL=style.css.map */

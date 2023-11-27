@@ -10,14 +10,12 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
         modal.addClass('show');
         $('#ref').val(refPhoto);
-        console.log(refPhoto);
     });
 
     contactButton.click(function (event) {
         event.preventDefault();
         modal.addClass('show');
         $('#ref').val(refPhoto);
-        console.log(refPhoto);
     });
 
     $(window).click(function (event) {
@@ -58,156 +56,160 @@ jQuery(document).ready(function ($) {
 
 // Gestion du background-color des options de filtre
 
-let dropdowns = document.querySelectorAll(".dropdown-content a");
-
-dropdowns.forEach(function (dropdown) {
-    dropdown.addEventListener('mouseenter', function (event) {
-        event.preventDefault();
-        dropdown.style.backgroundColor = "#FFD6D6";
+jQuery('.dropdown-content').each(function () {
+    let dropdown = jQuery(this);
+    dropdown.find('button').on('click', function () {
+        // Supprime la classe 'selected' de toutes les options dans ce menu déroulant
+        dropdown.find('button').removeClass('selected');
+        // Ajoute la classe 'selected' à l'option cliquée dans ce menu déroulant
+        jQuery(this).addClass('selected');
     });
-    dropdown.addEventListener('mouseleave', function (event) {
-        event.preventDefault();
-        dropdown.style.backgroundColor = "";
-    });
-    dropdown.addEventListener('mousedown', function (event) {
-        event.preventDefault();
-        dropdown.style.backgroundColor = "#FE5858";
-    });
-    dropdown.addEventListener('click', function (event) {
-        event.preventDefault();
-        dropdown.style.backgroundColor = "#E00000";
-        dropdown.style.color = "#fff";
-    })
 });
 
 
+//Gestion de la lightbox
 
-// Gestion de la lightbox
 
-/**
- * @property {HTMLElement} element
- * @property {string[]} images Chemin des images de la lightbox
- * @property {string} url Image actuellement affichée
- */
-class Lightbox {
+jQuery(document).ready(function ($) {
 
-    static init() {
-        const links = Array.from(document.querySelectorAll('a[href$=".jpg"], a[href$=".jpeg"], a[href$=".png"]'));
-        const images = links.map(link => link.getAttribute('href'));
-        links.forEach(link => {
-            // Supprimez tous les gestionnaires d'événements précédents
-            const newLink = link.cloneNode(true);
-            link.parentNode.replaceChild(newLink, link);
+    $('body').on('click', '.photo-fullscreen', function (e) {
+        e.preventDefault();
+        // On récupère l'URL de l'élément sur lequel on a cliqué
+        const url = $(this).attr('href');
+        // Tableau d'URLs de toutes les photos
+        const images = $('.photo-fullscreen').map(function () {
+            return $(this).attr('href');
+        }).get();
+        // Création de la lightbox et de ses éléments
+        const lightbox = $('<div>', { class: 'lightbox' });
+        const container = $('<div>', { class: 'lightbox-container' });
+        const loader = $('<div>', { class: 'lightbox-loader' });
+        container.append(loader);
 
-            // Ajoutez un nouveau gestionnaire d'événements
-            newLink.addEventListener('click', e => {
-                e.preventDefault();
-                new Lightbox(e.currentTarget.getAttribute('href'), images);
-            });
+        const img = $('<img>').on('load', function () {
+            lightbox.addClass('open');
+            // L'image chargée, on supprime le loader et on ajoute l'image au conteneur
+            loader.remove();
+            container.append(img);
+            // Suppression de la référence et de la catégorie
+            $('.lightbox-container .lightbox-info').remove();
+            // On récupère la référence et la catégorie
+            const reference = $('.photo-fullscreen[href="' + img.attr('src') + '"]').data('reference');
+            const category = $('.photo-fullscreen[href="' + img.attr('src') + '"]').data('category');
+            // On crée une nouvelle div contenant la référence et la catégorie
+            if (reference && category) {
+                const info = $('<div class="lightbox-info">').html('<span class="lightbox-reference">' + reference + '</span><span class="lightbox-category">' + category + '</span>');
+                container.append(info);
+            }
+        }).attr('src', url);
+
+        // Bouton de fermeture
+        const closeButton = $('<button>', { class: 'lightbox-close' }).html('<i class="fa-solid fa-xmark"></i>');
+
+        lightbox.append(closeButton, container);
+
+        $('body').append(lightbox);
+        closeButton.click(function (e) {
+            e.preventDefault();
+            lightbox.removeClass('open');
+            setTimeout(function () {
+                $('.lightbox').remove();
+            }, 500);
         });
-    }
 
-    /**
-     * @param {string} url URL de l'image
-     * @param {string[]} images Chemins des images de la lightbox
-     */
-    constructor(url, images) {
-        this.element = this.buildDOM(url)
-        this.images = images
-        this.loadImage(url)
-        this.onKeyUp = this.onKeyUp.bind(this)
-        document.body.appendChild(this.element)
-        document.addEventListener('keyup', this.onKeyUp)
-    }
+        // Fonction pour créer les boutons de pagination
+        function createButtons() {
+            let nextButton;
+            let prevButton;
 
-    loadImage(url) {
-        this.url = null;
-        const image = new Image();
-        const container = this.element.querySelector('.lightbox-container');
-        const loader = document.createElement('div');
-        loader.classList.add('lightbox-loader');
-        container.innerHTML = '';
-        container.appendChild(loader);
-        image.onload = function () {
-            container.removeChild(loader);
-            container.appendChild(image);
-            this.url = url;
-        }.bind(this); // Ajoutez cette ligne
-        image.src = url;
-    }
+            if ($(window).width() < 768) {
+                nextButton = $('<button>', { class: 'lightbox-next' }).html('<i class="fa-solid fa-chevron-right"></i>');
+                prevButton = $('<button>', { class: 'lightbox-prev' }).html('<i class="fa-solid fa-chevron-left"></i>');
+            } else {
+                nextButton = $('<button>', { class: 'lightbox-next' }).text('Suivante →');
+                prevButton = $('<button>', { class: 'lightbox-prev' }).text('← Précédente');
+            }
 
-    /**
-     * 
-     * @param {KeyboardEvent} e 
-     */
-    onKeyUp(e) {
+            $('.lightbox').append(nextButton, prevButton);
+            nextButton.click(function (e) {
+                e.preventDefault();
+                let index = images.indexOf($('.lightbox-container img').attr('src'));
+                index = (index + 1) % images.length;
+                // Ajoutez une classe à l'image pour déclencher l'animation de disparition
+                $('.lightbox-container img').addClass('disappear');
+                setTimeout(function () {
+                    // Changez l'URL de l'image pour la prochaine image
+                    $('.lightbox-container img').attr('src', images[index]);
+                    // Supprimez la classe de l'image pour déclencher l'animation d'apparition
+                    $('.lightbox-container img').removeClass('disappear');
+                }, 1000); // Assurez-vous que ce délai correspond à la durée de votre animation CSS
+            });
+
+            prevButton.click(function (e) {
+                e.preventDefault();
+                let index = images.indexOf($('.lightbox-container img').attr('src'));
+                index = (index - 1 + images.length) % images.length;
+                // Ajoutez une classe à l'image pour déclencher l'animation de disparition
+                $('.lightbox-container img').addClass('disappear');
+                setTimeout(function () {
+                    // Changez l'URL de l'image pour l'image précédente
+                    $('.lightbox-container img').attr('src', images[index]);
+                    // Supprimez la classe de l'image pour déclencher l'animation d'apparition
+                    $('.lightbox-container img').removeClass('disappear');
+                }, 1000); // Assurez-vous que ce délai correspond à la durée de votre animation CSS
+            });
+        }
+
+        // Appeler la fonction pour créer les boutons
+        createButtons();
+
+        // Ajouter un écouteur d'événement resize à la fenêtre
+        $(window).resize(function () {
+            // Supprimer les anciens boutons
+            $('.lightbox-next, .lightbox-prev').remove();
+            // Recréer les boutons avec le nouveau contenu
+            createButtons();
+        });
+    });
+
+
+    // Possibilité de naviguer au clavier
+    $(document).keyup(function (e) {
         if (e.key == 'Escape') {
-            this.close(e)
-        } else if (e.key == 'ArrowLeft') {
-            this.prev(e)
-        } if (e.key == 'ArrowRight') {
-            this.next(e)
+            $('.lightbox').remove();
         }
-    }
-
-    /**
-     * Ferme la lightbox
-     * @param {MouseEvent|KeyboardEvent} e 
-     */
-    close(e) {
-        e.preventDefault();
-        this.element.classList.add('fadeOut');
-        window.setTimeout(() => {
-            this.element.parentElement.removeChild(this.element)
-        }, 500)
-        document.removeEventListener('keyup', this.onKeyUp)
-    }
-
-    /**
-     * 
-     * @param {MouseEvent|KeyboardEvent} e 
-     */
-    next(e) {
-        e.preventDefault();
-        let i = this.images.findIndex(image => image == this.url);
-        if (i == this.images.length - 1) {
-            i = -1;
+        else if (e.key == 'ArrowLeft') {
+            const images = $('.photo-fullscreen').map(function () {
+                return $(this).attr('href');
+            }).get();
+            let index = images.indexOf($('.lightbox-container img').attr('src'));
+            index = (index - 1 + images.length) % images.length;
+            $('.lightbox-container img').attr('src', images[index]);
+            $('.lightbox-container div:not(.lightbox-loader)').remove();
+            const reference = $('.photo-fullscreen[href="' + images[index] + '"]').data('reference');
+            const category = $('.photo-fullscreen[href="' + images[index] + '"]').data('category');
+            if (reference && category) {
+                const info = $('<div>').html('<span class="lightbox-reference">' + reference + '</span><span class="lightbox-category">' + category + '</span>');
+                $('.lightbox-container').append(info);
+            }
         }
-        this.loadImage(this.images[i + 1]);
-    }
-
-    /**
-     * 
-     * @param {MouseEvent|KeyboardEvent} e 
-     */
-    prev(e) {
-        e.preventDefault();
-        let i = this.images.findIndex(image => image == this.url);
-        if (i == 0) {
-            i = this.images.length;
+        else if (e.key == 'ArrowRight') {
+            const images = $('.photo-fullscreen').map(function () {
+                return $(this).attr('href');
+            }).get();
+            let index = images.indexOf($('.lightbox-container img').attr('src'));
+            index = (index + 1) % images.length;
+            $('.lightbox-container img').attr('src', images[index]);
+            $('.lightbox-container div:not(.lightbox-loader)').remove();
+            const reference = $('.photo-fullscreen[href="' + images[index] + '"]').data('reference');
+            const category = $('.photo-fullscreen[href="' + images[index] + '"]').data('category');
+            if (reference && category) {
+                const info = $('<div>').html('<span class="lightbox-reference">' + reference + '</span><span class="lightbox-category">' + category + '</span>');
+                $('.lightbox-container').append(info);
+            }
         }
-        this.loadImage(this.images[i - 1]);
-    }
-
-    buildDOM(url) {
-        const dom = document.createElement('div')
-        dom.classList.add('lightbox')
-        dom.innerHTML = `<button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
-        <button class="lightbox-next">Suivante →</button>
-        <button class="lightbox-prev">← Précédente</button>
-        <div class="lightbox-container"></div>`
-        dom.querySelector('.lightbox-close').addEventListener('click',
-            this.close.bind(this));
-        dom.querySelector('.lightbox-next').addEventListener('click',
-            this.next.bind(this));
-        dom.querySelector('.lightbox-prev').addEventListener('click',
-            this.prev.bind(this));
-        return dom
-    }
-}
-
-Lightbox.init()
-
+    });
+});
 
 
 //Requête ajax des filtres
@@ -216,7 +218,7 @@ Lightbox.init()
 let current_filters = {};
 let offset = 12; // Initialisez l'offset à 12 pour charger les posts suivants
 
-jQuery('.dropdown-content a').click(function (event) {
+jQuery('.dropdown-content button').click(function (event) {
 
     event.preventDefault();
 
@@ -236,7 +238,6 @@ jQuery('.dropdown-content a').click(function (event) {
         },
         success: function (response) {
             jQuery('.catalogue').html(response); //On remplace les photos présentes par les photos filtrées
-            Lightbox.init();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
@@ -265,7 +266,6 @@ jQuery('#load-more').click(function (event) {
         success: function (response) {
             jQuery('.catalogue').append(response);
             offset += 12; // Augmente l'offset pour charger les prochains posts
-            Lightbox.init();
         }
     });
 });

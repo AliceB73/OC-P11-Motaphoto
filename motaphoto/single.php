@@ -21,8 +21,17 @@ if (have_posts()) :
                     <p>Type : <?php echo $type; ?></p>
                     <p>Année : <?php echo $year; ?></p>
                 </div>
-                <div class="main-photo-bloc">
-                    <img id="main-photo" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>">
+                <div class="main-photo-block">
+                    <div class="photo-wrapper">
+                        <img id="main-photo" src="<?php echo wp_get_attachment_image_url($image['ID'], 'large'); ?>" alt="<?php echo $image['alt']; ?>">
+                        <div class="photo-overlay-single">
+                            <div class="photo-info">
+                                <a href="<?php echo $image['url']; ?>" class="photo-fullscreen">
+                                    <img class="eye-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/fullscreen-icon.svg" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="cta-and-pagination">

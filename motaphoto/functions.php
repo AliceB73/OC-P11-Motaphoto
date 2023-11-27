@@ -1,15 +1,18 @@
 <?php
 
+add_theme_support('post-thumbnails');
+
 //Chargement des scripts (CSS, JS, Ajax, icônes)
 
 function motaphoto_enqueue_styles()
 {
     wp_enqueue_style('style', get_stylesheet_uri(), array());
+
+    wp_enqueue_script('font-awesone-icons', 'https://kit.fontawesome.com/6e49e8fbfb.js');
     wp_enqueue_script('js', get_stylesheet_directory_uri() . '/js/scripts.js', array('jquery'), false, true);
     wp_localize_script('js', 'load_more_params', array(
         'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php',
     ));
-    wp_enqueue_script('font-awesone-icons', 'https://kit.fontawesome.com/6e49e8fbfb.js');
 }
 add_action('wp_enqueue_scripts', 'motaphoto_enqueue_styles');
 
@@ -26,18 +29,19 @@ add_action('after_setup_theme', 'motaphoto_register_menu');
 
 function ajouter_ref_photo()
 {
+    global $post;
+    $ref_photo = '';
+
     if (is_singular('photo')) {
-        global $post;
         $ref_photo = get_post_meta($post->ID, 'reference', true);
-
-        echo '<script type="text/javascript">';
-        echo 'let refPhoto = "' . $ref_photo . '";';
-        echo '</script>';
     }
-}
-add_action('wp_footer', 'ajouter_ref_photo');
 
-add_theme_support('post-thumbnails');
+    echo '<script type="text/javascript">';
+    echo 'let refPhoto = "' . $ref_photo . '";';
+    echo '</script>';
+}
+
+add_action('wp_footer', 'ajouter_ref_photo');
 
 
 //Requête ajax pour les filtres
@@ -97,7 +101,7 @@ function filter_posts_function()
             }
         }
     } else {
-        echo '<div><p class="error-msg">Aucune photo n\'a été trouvée pour ces filtres.</p></div>';
+        echo '<div class="errormsg-div"><p class="error-msg">Aucun post n\'a été trouvé.</p></div>';
     }
 
     wp_die(); // On met fin à l'exécution de la fonction
@@ -163,7 +167,7 @@ function load_more_function()
             }
         }
     } else {
-        echo '<div><p class="error-msg">Aucun post n\'a été trouvé.</p></div>';
+        echo '<div class="errormsg-div"><p class="error-msg">Aucun post n\'a été trouvé.</p></div>';
     }
 
     wp_die(); // On termine l'exécution de la fonction
