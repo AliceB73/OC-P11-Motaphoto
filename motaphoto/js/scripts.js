@@ -66,6 +66,38 @@ jQuery('.dropdown-content').each(function () {
     });
 });
 
+// Responsive des filtres
+
+// let swiper;
+
+// function initSwiper() {
+//     let screenWidth = window.innerWidth;
+//     if (screenWidth < 855 && swiper === undefined) {
+//         swiper = new Swiper('.swiper-container', {
+//             direction: 'horizontal',
+//             slidesPerView: 'auto',
+//             freeMode: true,
+//             scrollbar: {
+//                 el: '.swiper-scrollbar',
+//             },
+//             mousewheel: true,
+//             // resistance: true,
+//             // resistanceRatio: 0.8,
+//         });
+//     } else if (screenWidth >= 855 && swiper !== undefined) {
+//         swiper.destroy(true, true);
+//         swiper = undefined;
+//     }
+// }
+
+// // Initialiser Swiper au chargement de la page
+// initSwiper();
+
+// // Réinitialiser Swiper lorsque la taille de la fenêtre change
+// window.addEventListener('resize', initSwiper);
+
+
+
 
 //Gestion de la lightbox
 
@@ -216,7 +248,7 @@ jQuery(document).ready(function ($) {
 
 
 let current_filters = {};
-let offset = 12; // Initialisez l'offset à 12 pour charger les posts suivants
+let offset = 12; // Initialisation de l'offset à 12 pour charger les posts suivants
 
 jQuery('.dropdown-content button').click(function (event) {
 
@@ -226,7 +258,7 @@ jQuery('.dropdown-content button').click(function (event) {
     let filterValue = jQuery(this).text();
     current_filters[filterType] = filterValue;
 
-    // Réinitialisez l'offset chaque fois qu'un filtre est modifié
+    // Réinitialisation l'offset chaque fois qu'un filtre est modifié
     offset = 12;
 
     jQuery.ajax({
@@ -261,7 +293,7 @@ jQuery('#load-more').click(function (event) {
         data: {
             action: 'load_more_function',
             offset: num_posts,
-            filters: current_filters, // Envoyez current_filters à la place de current_filter
+            filters: current_filters, // Envoyer current_filters à la place de current_filter
         },
         success: function (response) {
             jQuery('.catalogue').append(response);

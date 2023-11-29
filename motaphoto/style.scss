@@ -20,6 +20,7 @@ Text Domain: motaphoto
 */
 
 /* === Importation des polices === */
+
 /* space-mono-regular - latin */
 @font-face {
 	font-display: swap;
@@ -747,10 +748,6 @@ footer {
 			max-height: 90vh;
 			display: block;
 			transition: opacity 1s ease-in-out;
-    		/*opacity: 1;
-			&.disappear {
-				opacity: 0;
-			}*/
 		}
 
 		.lightbox-reference,
@@ -795,6 +792,7 @@ footer {
 		}
 	}
 }
+
 
 @media (max-width: 768px) {
 	header {

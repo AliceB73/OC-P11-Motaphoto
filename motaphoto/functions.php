@@ -7,9 +7,11 @@ add_theme_support('post-thumbnails');
 function motaphoto_enqueue_styles()
 {
     wp_enqueue_style('style', get_stylesheet_uri(), array());
+    wp_enqueue_style('swiper-style', 'https://unpkg.com/swiper/swiper-bundle.min.css');
 
     wp_enqueue_script('font-awesone-icons', 'https://kit.fontawesome.com/6e49e8fbfb.js');
-    wp_enqueue_script('js', get_stylesheet_directory_uri() . '/js/scripts.js', array('jquery'), false, true);
+    wp_enqueue_script('swiper', 'https://unpkg.com/swiper/swiper-bundle.min.js', array(), false, true);
+    wp_enqueue_script('js', get_stylesheet_directory_uri() . '/js/scripts.js', array('jquery', 'swiper'), false, true);
     wp_localize_script('js', 'load_more_params', array(
         'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php',
     ));

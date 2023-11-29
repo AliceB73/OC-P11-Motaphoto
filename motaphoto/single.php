@@ -76,7 +76,7 @@ if (have_posts()) :
             );
             $related_posts = new WP_Query($args);
             if ($related_posts->have_posts()) :
-                echo '<h3>Vous aimerez aussi</h3>'; // Déplacez le titre ici
+                echo '<h3>Vous aimerez aussi</h3>';
             endif;
             ?>
             <div class="two-photos">
